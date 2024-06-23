@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Regristration Form</title>
+    <title>Login Form</title>
   </head>
 
   <body>
@@ -133,16 +133,16 @@
     <div class="container">
       <div class="title">Login</div>
       
-      <form action="/login" method="GET">
+      <form action="/login" method="POST">
         <div class="user-details">
           <div class="input-box">
-            <span class="deatils">Email</span>
-            <input type="text" placeholder="Enter Your Email" required />
+            <span class="details">Email or Username</span>
+            <input name="userId" type="text" placeholder="Enter Your Email or Username" required />
           </div>
 
           <div class="input-box">
-            <span class="deatils">Password</span>
-            <input type="text" placeholder="Enter Your Password" required />
+            <span class="details">Password</span>
+            <input name="password" type="text" placeholder="Enter Your Password" required />
           </div>
         </div>
 

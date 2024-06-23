@@ -9,10 +9,11 @@ const regexPatterns = {
 
 const userDataValidation = ({ name, username, email, password }) => {
   return new Promise((resolve, reject) => {
-    name.trim();
-    email.trim();
-    username.trim();
-    password.trim();
+    name = name && name.trim();
+    username = username && username.trim();
+    email = email && email.trim();
+    password = password && password.trim();
+
     console.log(name, username, email, password);
 
     if (!name || !username || !email || !password) {
@@ -40,4 +41,22 @@ const userDataValidation = ({ name, username, email, password }) => {
   });
 };
 
-module.exports = { userDataValidation };
+
+const loginValidation = ({ userId, password }) => {
+  return new Promise((resolve, reject) => {
+    if (typeof userId !== "string" || typeof password !== "string") {
+      return reject("UserId and Password must be strings");
+    }
+
+    userId = userId.trim();
+    password = password.trim();
+
+    if (!userId || !password) {
+      return reject("Please enter all fields");
+    }
+
+    resolve();
+  });
+};
+
+module.exports = { userDataValidation,loginValidation, regexPatterns};
