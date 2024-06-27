@@ -42,6 +42,8 @@ const userDataValidation = ({ name, username, email, password }) => {
 };
 
 
+// Login details validation
+
 const loginValidation = ({ userId, password }) => {
   return new Promise((resolve, reject) => {
     if (typeof userId !== "string" || typeof password !== "string") {
