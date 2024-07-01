@@ -41,7 +41,6 @@ const userDataValidation = ({ name, username, email, password }) => {
   });
 };
 
-
 // Login details validation
 
 const loginValidation = ({ userId, password }) => {
@@ -61,4 +60,4 @@ const loginValidation = ({ userId, password }) => {
   });
 };
 
-module.exports = { userDataValidation,loginValidation, regexPatterns};
+module.exports = { userDataValidation, loginValidation, regexPatterns };
