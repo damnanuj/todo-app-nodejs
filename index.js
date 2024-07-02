@@ -19,8 +19,11 @@ const store = new connectMongodbSession({
 
 // app.use(cookieParser())
 // app.use(cors())
+//====================middleware====================
+app.set("view engine", "ejs");
 app.use(express.json()); //body parser json format POSTMAN
 app.use(express.urlencoded({ extended: true })); //body parser url
+app.use(express.static("public"))
 app.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -51,8 +54,7 @@ mongoose
     console.log(clc.redBright(err));
   });
 
-//====================middleware====================
-app.set("view engine", "ejs");
+
 
 app.get("/", (req, res) => {
   console.log("server is running");
@@ -184,13 +186,12 @@ app.post("/login", async (req, res) => {
   }
 });
 
-//dashboard api
+//====================dashboard api=====================================
 // isAuth is middleware protecting the api 
 app.get("/dashboard",isAuth, (req,res)=>{
   console.log("dashboard api");
   return res.render("dashboard")
 })
-
 //===================== logout api=====================
 app.post("/logout",isAuth, (req,res)=>{
 
@@ -199,8 +200,6 @@ app.post("/logout",isAuth, (req,res)=>{
       return res.status(200).json("Logout Successfull")
   })
 })
-
-
 
 // ===================todoCreation api==================================
 app.post("/create-item", isAuth, async (req, res)=>{
@@ -305,10 +304,11 @@ app.post("/edit-item", isAuth, async (req, res)=>{
 
   // all checks done now update the todo
   const todoDbPrev = await todoModel.findOneAndUpdate({_id:todoId}, {todo: newData})
-  console.log(todoDbPrev);
+  // console.log(todoDbPrev);
   return res.send({
     ststus:200,
-    message:"Todo updated successfully"
+    message:"Todo updated successfully",
+    data:todoPrev
   })
 
  } catch (error) {
@@ -320,7 +320,7 @@ app.post("/edit-item", isAuth, async (req, res)=>{
  }
 })
 
-// ===============DElete todo api======================
+// ===============Delete todo api======================
 app.post("/delete-item", isAuth, async (req, res)=>{
     const todoId = req.body.todoId;
 
@@ -353,7 +353,8 @@ app.post("/delete-item", isAuth, async (req, res)=>{
       console.log(todoPrev);
       return res.send({
         ststus:200,
-        message:"Todo deleted successfully"
+        message:"Todo deleted successfully",
+        data:todoPrev
       })
     } catch (error) {
       return res.send({
