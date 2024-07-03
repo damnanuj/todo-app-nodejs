@@ -306,9 +306,9 @@ app.post("/edit-item", isAuth, async (req, res)=>{
   const todoDbPrev = await todoModel.findOneAndUpdate({_id:todoId}, {todo: newData})
   // console.log(todoDbPrev);
   return res.send({
-    ststus:200,
+    status:200,
     message:"Todo updated successfully",
-    data:todoPrev
+    data:todoDbPrev
   })
 
  } catch (error) {
@@ -344,7 +344,7 @@ app.post("/delete-item", isAuth, async (req, res)=>{
       console.log(username, ownerUsername);
       if(username !== ownerUsername){
         return res.send({
-          ststus:403,
+          status:403,
           message: "You are not allowed to delete"
         })
       }
@@ -352,7 +352,7 @@ app.post("/delete-item", isAuth, async (req, res)=>{
       const todoPrev = await todoModel.findOneAndDelete({ _id: todoId })
       console.log(todoPrev);
       return res.send({
-        ststus:200,
+        status:200,
         message:"Todo deleted successfully",
         data:todoPrev
       })
