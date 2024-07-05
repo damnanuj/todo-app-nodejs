@@ -23,7 +23,7 @@ const store = new connectMongodbSession({
 app.set("view engine", "ejs");
 app.use(express.json()); //body parser json format POSTMAN
 app.use(express.urlencoded({ extended: true })); //body parser url
-app.use(express.static("public"))
+app.use(express.static("public"));
 app.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -43,6 +43,7 @@ const userModel = require("./models/userModel");
 const isAuth = require("./middleware/authMiddleware");
 const todoValidation = require("./utils/todoValidation");
 const todoModel = require("./models/todoModel");
+const ratelimitng = require("./middleware/rateLimiting");
 
 //====================db connections====================
 mongoose
@@ -53,8 +54,6 @@ mongoose
   .catch((err) => {
     console.log(clc.redBright(err));
   });
-
-
 
 app.get("/", (req, res) => {
   console.log("server is running");
@@ -81,7 +80,7 @@ app.post("/register", async (req, res) => {
   }
 
   try {
-//=============email and username is unique or not====================
+    //=============email and username is unique or not====================
     const userEmailExist = await userModel.findOne({ email: email });
     if (userEmailExist) {
       return res.status(400).json("Email already exist");
@@ -91,13 +90,13 @@ app.post("/register", async (req, res) => {
       return res.status(400).json("username already exist");
     }
 
-//====================encrypt the password====================
+    //====================encrypt the password====================
     // const hashedPassword = await bcrypt.hash(
     //   password,
     //   parseInt(process.env.SALT)
     // );
 
-//====================store userData in db====================
+    //====================store userData in db====================
 
     const userObj = new userModel({
       name,
@@ -112,7 +111,7 @@ app.post("/register", async (req, res) => {
     //   message: "Registration Successfully",
     //   data: userDb,
     // });
-    return res.redirect("/dashboard")
+    return res.redirect("/dashboard");
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error",
@@ -131,14 +130,14 @@ app.post("/login", async (req, res) => {
   // console.log("line 110:", req.body);
   const { userId, password } = req.body;
 
-//====================loginData validation====================
+  //====================loginData validation====================
   try {
     await loginValidation({ userId, password });
   } catch (error) {
     return res.status(400).json(error);
   }
 
-//====================find the user from the dataBase====================
+  //====================find the user from the dataBase====================
   try {
     let userDb = {};
     //if the user login with email
@@ -158,19 +157,19 @@ app.post("/login", async (req, res) => {
       // return res.redirect("/register")
     }
     // console.log(userDb);
-  //====================comapare the password====================
+    //====================comapare the password====================
 
     // const passwordIsMatched = await bcrypt.compare(password, userDb.password);
     // // console.log(passwordIsMatched);
     // if (!passwordIsMatched) {
     //   return res.status(400).json("Incorrect password");
     // }
-    if(password!==userDb.password){
-      return res.status(400).json("Incorrect password")
+    if (password !== userDb.password) {
+      return res.status(400).json("Incorrect password");
     }
     // ==================================================
 
-//====================session based authentication====================
+    //====================session based authentication====================
     console.log(req.session);
     req.session.isAuth = true;
     req.session.user = {
@@ -180,195 +179,211 @@ app.post("/login", async (req, res) => {
     };
 
     // return res.status(200).json("Login successfull")
-    return res.redirect("/dashboard")
+    return res.redirect("/dashboard");
   } catch (error) {
     return res.status(500).json(error);
   }
 });
 
 //====================dashboard api=====================================
-// isAuth is middleware protecting the api 
-app.get("/dashboard",isAuth, (req,res)=>{
-  console.log("dashboard api");
-  return res.render("dashboard")
-})
+// isAuth is middleware protecting the api
+app.get("/dashboard", isAuth, (req, res) => {
+  // console.log("dashboard api");
+  return res.render("dashboard");
+});
 //===================== logout api=====================
-app.post("/logout",isAuth, (req,res)=>{
+app.post("/logout", isAuth, (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      console.error("Error destroying session:", error); // Log the error
+      return res.status(500).json("Logout Unsuccessful");
+    }
 
-  req.session.destroy((error)=>{
-    if(error) return res.status(500).json("Logout Unsuccessfull")
-      return res.status(200).json("Logout Successfull")
-  })
-})
+    console.log("Logout successful");
+    res.status(200).json({ message: "Logout successful" });
+  });
+});
 
 // ===================todoCreation api==================================
-app.post("/create-item", isAuth, async (req, res)=>{
-  const username = req.session.user.username
-  const todo = req.body.todo
-  
-  console.log(username ,todo);
+app.post("/create-item", isAuth, ratelimitng, async (req, res) => {
+  const username = req.session.user.username;
+  const todo = req.body.todo;
+
+  console.log(username, todo);
   // todo validation
   try {
-    await todoValidation({todo:todo})
+    await todoValidation({ todo: todo });
   } catch (error) {
     return res.status(400).json(error);
   }
-  
+
   //store data in db
   const todoObj = new todoModel({
     todo,
     username,
-   
   });
   try {
     const todoDb = await todoObj.save();
     return res.status(201).json({
-      message:"todo added successfully",
-      data:todoDb
-    })
+      message: "todo added successfully",
+      data: todoDb,
+    });
   } catch (error) {
     return res.status(500).json({
-      message:"Internal server error",
-      error:error
-    })
+      message: "Internal server error",
+      error: error,
+    });
   }
-})
+});
 
 // =================read a user todos from Db============================
-
-app.get("/read-item", isAuth, async (req,res)=>{
+// read-item?skip=5
+app.get("/read-item", isAuth, async (req, res) => {
   const username = req.session.user.username;
+  const SKIP = Number(req.query.skip) || 0;
+  const LIMIT = 5;
+  // console.log(SKIP);
   try {
-    const todos = await todoModel.find({username:username} );
-    if(todos.length===0){
+    // const todos = await todoModel.find({ username: username });
+     //mongodb aggregate method
+    //pagination(skip,limit), match
+
+    const todos = await todoModel.aggregate([
+      {
+        $match: { username: username },
+      },
+      {
+        $skip: SKIP,
+      },
+      {
+        $limit: LIMIT,
+      },
+    ]);
+    // console.log(todos);
+    if (todos.length === 0) {
       return res.send({
-        status:204,
-        message:"No todo found, please add something"
-      })
+        status: 204,
+        message: "No todo found, please add something",
+      });
     }
     return res.send({
-      status:200,
-      message:"Read success",
-      data :todos
-    })
+      status: 200,
+      message: "Read success",
+      data: todos,
+    });
   } catch (error) {
     return res.send({
-      status :500,
+      status: 500,
       message: "Internal error",
-      error :error
-    })
+      error: error,
+    });
   }
-  
-})
-
+});
 
 // ===================Edit TODO Api
-app.post("/edit-item", isAuth, async (req, res)=>{
+app.post("/edit-item", isAuth, async (req, res) => {
   const newData = req.body.newData;
   const todoId = req.body.todoId;
-  const username = req.session.user.username
+  const username = req.session.user.username;
 
-
-  if(!todoId){
-    return res.status(400).json("Todo id is missing")
+  if (!todoId) {
+    return res.status(400).json("Todo id is missing");
   }
-// todo validation
+  // todo validation
   try {
-    await todoValidation({todo:newData})
+    await todoValidation({ todo: newData });
   } catch (error) {
     return res.send({
-      status :400,
-      message: error
-    })
+      status: 400,
+      message: error,
+    });
   }
 
   // provided todo id present or not in DB
- try {
-  const todoDb = await todoModel.findOne({_id: todoId});
-  console.log(todoDb);
-  if(!todoDb){
-    return res.status(400).json(`Todo not found with this id ${todoId}`)
-  }
+  try {
+    const todoDb = await todoModel.findOne({ _id: todoId });
+    console.log(todoDb);
+    if (!todoDb) {
+      return res.status(400).json(`Todo not found with this id ${todoId}`);
+    }
 
+    //  ownership check of the provided todoId
+    const ownerUsername = todoDb.username;
+    console.log(username, ownerUsername);
 
-  //  ownership check of the provided todoId
-  const ownerUsername = todoDb.username
-  console.log(username, ownerUsername);
+    if (username !== ownerUsername) {
+      return res.send({
+        status: 403,
+        message: "You are not allowed to edit the todo",
+      });
+    }
 
-  if(username !==ownerUsername){
+    // all checks done now update the todo
+    const todoDbPrev = await todoModel.findOneAndUpdate(
+      { _id: todoId },
+      { todo: newData }
+    );
+    // console.log(todoDbPrev);
     return res.send({
-      status: 403,
-      message : "You are not allowed to edit the todo"
-    })
+      status: 200,
+      message: "Todo updated successfully",
+      data: todoDbPrev,
+    });
+  } catch (error) {
+    return res.send({
+      status: 500,
+      message: "Internal server error",
+      error: error,
+    });
   }
-
-  // all checks done now update the todo
-  const todoDbPrev = await todoModel.findOneAndUpdate({_id:todoId}, {todo: newData})
-  // console.log(todoDbPrev);
-  return res.send({
-    status:200,
-    message:"Todo updated successfully",
-    data:todoDbPrev
-  })
-
- } catch (error) {
-  return res.send({
-    status :500,
-    message: "Internal server error",
-    error:error
-  })
- }
-})
+});
 
 // ===============Delete todo api======================
-app.post("/delete-item", isAuth, async (req, res)=>{
-    const todoId = req.body.todoId;
+app.post("/delete-item", isAuth, async (req, res) => {
+  const todoId = req.body.todoId;
 
-    if(!todoId){
-      return res.status(400).json("Todo id is missing")
-    }
-    try {
-      // check if present or not
-      const todoDb = await todoModel.findOne({_id:todoId})
-      console.log(todoDb);
-      if(!todoDb){
-        return res.send({
-          status:400,
-          message: "No todo found with this id"
-        })
-      }
-      // Ownership check of id
-  
-      const username = req.session.user.username
-      const ownerUsername = todoDb.username
-      console.log(username, ownerUsername);
-      if(username !== ownerUsername){
-        return res.send({
-          status:403,
-          message: "You are not allowed to delete"
-        })
-      }
-  // all checks done finally delete the todo
-      const todoPrev = await todoModel.findOneAndDelete({ _id: todoId })
-      console.log(todoPrev);
+  if (!todoId) {
+    return res.status(400).json("Todo id is missing");
+  }
+  try {
+    // check if present or not
+    const todoDb = await todoModel.findOne({ _id: todoId });
+    console.log(todoDb);
+    if (!todoDb) {
       return res.send({
-        status:200,
-        message:"Todo deleted successfully",
-        data:todoPrev
-      })
-    } catch (error) {
-      return res.send({
-        status :500,
-        message: "Internal server error",
-        error:error
-      })
+        status: 400,
+        message: "No todo found with this id",
+      });
     }
-    
-})
+    // Ownership check of id
 
+    const username = req.session.user.username;
+    const ownerUsername = todoDb.username;
+    console.log(username, ownerUsername);
+    if (username !== ownerUsername) {
+      return res.send({
+        status: 403,
+        message: "You are not allowed to delete",
+      });
+    }
+    // all checks done finally delete the todo
+    const todoPrev = await todoModel.findOneAndDelete({ _id: todoId });
+    console.log(todoPrev);
+    return res.send({
+      status: 200,
+      message: "Todo deleted successfully",
+      data: todoPrev,
+    });
+  } catch (error) {
+    return res.send({
+      status: 500,
+      message: "Internal server error",
+      error: error,
+    });
+  }
+});
 
-
-// ========================================= 
+// =========================================
 app.listen(PORT, () => {
   console.log(clc.yellowBright(`server is running on port :`));
   console.log(clc.yellowBright(`http://localhost:${PORT}`));
