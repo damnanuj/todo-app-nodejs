@@ -1,10 +1,13 @@
 const express = require("express");
+
 require("dotenv").config();
 const clc = require("cli-color");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const connectMongodbSession = require("connect-mongodb-session")(session);
+const jwt = require("jsonwebtoken");
+
 // const cors = require("cors")
 // const cookieParser = require("cookie-parser")
 
@@ -38,6 +41,8 @@ const {
   userDataValidation,
   loginValidation,
   regexPatterns,
+  generateToken,
+  sendVerificationMail,
 } = require("./utils/authUtil");
 const userModel = require("./models/userModel");
 const isAuth = require("./middleware/authMiddleware");
@@ -107,16 +112,101 @@ app.post("/register", async (req, res) => {
     });
 
     const userDb = await userObj.save();
+
     // return res.status(201).json({
     //   message: "Registration Successfully",
     //   data: userDb,
     // });
-    return res.redirect("/dashboard");
+
+    //generate email verification token
+    const token = generateToken({ email });
+
+    //send verifcation mail
+    sendVerificationMail({ email, token });
+
+    return res.status(201).send(`
+      <html>
+        <head>
+          <title>Registration Successful</title>
+        </head>
+        <body>
+          <h1>Registration Successful</h1>
+          <h2>Please check your email to verify your account</h2>
+          <p>Redirecting to login page in <span id="countdown">3</span> seconds...</p>
+          <script>
+            let countdownNumber = 3;
+            const countdownElement = document.getElementById('countdown');
+    
+            const countdownInterval = setInterval(() => {
+              countdownNumber--;
+              countdownElement.textContent = countdownNumber;
+    
+              if (countdownNumber <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '/login'; // login page URL
+              }
+            }, 1000);
+          </script>
+        </body>
+      </html>
+    `);
+    
+   
   } catch (error) {
     return res.status(500).json({
       message: "Internal server error",
       error: error,
     });
+  }
+});
+
+// ============verify email token ================
+
+app.get("/verifytoken/:token", async (req, res) => {
+  console.log(req.params.token);
+  const token = req.params.token;
+
+  const email = jwt.verify(token, process.env.SECRET_KEY);
+  console.log(email);
+
+  try {
+    await userModel.findOneAndUpdate(
+      { email: email },
+      { isEmailVerified: true }
+    );
+    // Generate a new session token
+    const sessionToken = generateToken({ email });
+
+    // Set the session token as a cookie (or in the response)
+    res.cookie('sessionToken', sessionToken, { httpOnly: true });
+    return res.send(`
+      <html>
+        <head>
+          <title>Email Verified</title>
+        </head>
+        <body>
+          <h1>Email has been verified successfully</h1>
+          <p>Redirecting to dashboard in <span id="countdown">3</span> seconds...</p>
+          <script>
+            let countdownNumber = 3;
+            const countdownElement = document.getElementById('countdown');
+    
+            const countdownInterval = setInterval(() => {
+              countdownNumber--;
+              countdownElement.textContent = countdownNumber;
+    
+              if (countdownNumber <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '/dashboard'; // dashboard page URL
+              }
+            }, 1000);
+          </script>
+        </body>
+      </html>
+    `);
+    
+  } catch (error) {
+    return res.status(500).json(error);
   }
 });
 
@@ -150,12 +240,43 @@ app.post("/login", async (req, res) => {
       userDb = await userModel.findOne({ username: userId });
       console.log("found user with username");
     }
+    console.log(userDb);
 
     //if user doesn't exist and we get null
     if (!userDb) {
       return res.status(400).json("user not found, please register first");
       // return res.redirect("/register")
     }
+    //check for verified email
+
+    if (!userDb.isEmailVerified) {
+      return res.status(400).send(`
+        <html>
+          <head>
+            <title>Email Verification Required</title>
+          </head>
+          <body>
+            <h1>Please verify your email first</h1>
+            <p>Redirecting to login page in <span id="countdown">3</span> seconds...</p>
+            <script>
+              let countdownNumber = 3;
+              const countdownElement = document.getElementById('countdown');
+    
+              const countdownInterval = setInterval(() => {
+                countdownNumber--;
+                countdownElement.textContent = countdownNumber;
+    
+                if (countdownNumber <= 0) {
+                  clearInterval(countdownInterval);
+                  window.location.href = '/login'; // login page URL
+                }
+              }, 1000);
+            </script>
+          </body>
+        </html>
+      `);
+    }
+    
     // console.log(userDb);
     //====================comapare the password====================
 
@@ -245,7 +366,7 @@ app.get("/read-item", isAuth, async (req, res) => {
   // console.log(SKIP);
   try {
     // const todos = await todoModel.find({ username: username });
-     //mongodb aggregate method
+    //mongodb aggregate method
     //pagination(skip,limit), match
 
     const todos = await todoModel.aggregate([
