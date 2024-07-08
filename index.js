@@ -54,7 +54,7 @@ const ratelimitng = require("./middleware/rateLimiting");
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log(clc.blue.bgGreenBright("Mongodb connected successfully"));
+    console.log(clc.white.bgGreenBright("Mongodb connected successfully"));
   })
   .catch((err) => {
     console.log(clc.redBright(err));
