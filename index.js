@@ -328,7 +328,6 @@ app.post("/logout", isAuth, (req, res) => {
 });
 
 //================== logout from all devices api=====================
-
 app.post("/logout-all-device", isAuth,async (req,res)=>{
   const userId = req.session.user.userId;
   //create a session schema
