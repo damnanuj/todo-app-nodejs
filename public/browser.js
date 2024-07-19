@@ -150,7 +150,7 @@ document.addEventListener("click", function (event) {
           // Redirect to the login page after a delay
           setTimeout(() => {
             window.location.href = "/login";
-          }, 1000); // 2-second delay
+          }, 1000); // 1-second delay
         }
       })
       .catch((err) => {
@@ -158,6 +158,34 @@ document.addEventListener("click", function (event) {
         // Remove loader if there's an error
         loader.remove();
       });
+  }
+
+  //==========log out all devices
+  if(event.target.classList.contains("logoutAll")){
+    console.log("Logout all clicked");
+    // Create the loader element
+    const loader = document.createElement("div");
+    loader.classList.add("loader");
+
+    // Append the loader next to the logout button
+    event.target.parentNode.appendChild(loader);
+
+    axios
+    .post("/logout-all-device")
+    .then((res) => {
+      // console.log(res);
+      if (res.status === 200) {
+        // Redirect to the login page after a delay
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1000); // 1-second delay
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      // Remove loader if there's an error
+      loader.remove();
+    });
   }
 
   //show more
@@ -174,7 +202,7 @@ document.addEventListener("click", function (event) {
         loader.remove();
       });
       
-    }, 3000); // 2-second delay
+    }, 2000); // 2-second delay
     
   }
 });

@@ -11,14 +11,14 @@ const regexPatterns = {
   password: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z]{8,}$/,
 };
 
-const userDataValidation = ({ name, username, email, password }) => {
+const userDataValidation = ( name, username, email, password ) => {
   return new Promise((resolve, reject) => {
     name = name && name.trim();
     username = username && username.trim();
     email = email && email.trim();
     password = password && password.trim();
 
-    console.log(name, username, email, password);
+    // console.log("21hiii=>>", name, username, email, password);
 
     if (!name || !username || !email || !password) {
       return reject("All fields are required");
