@@ -74,12 +74,12 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { name, username, email, password } = req.body;
 
   //=================user data validation====================
   try {
-    await userDataValidation({ name, username, email, password });
+    await userDataValidation( name, username, email, password );
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -213,12 +213,13 @@ app.get("/verifytoken/:token", async (req, res) => {
 //==================== user login api====================
 
 app.get("/login", (req, res) => {
-  return res.render("login-page");
+  return res.render("login-page", {obj:"hii"});
 });
 
 app.post("/login", async (req, res) => {
   // console.log("line 110:", req.body);
   const { userId, password } = req.body;
+  console.log(userId,password);
 
   //====================loginData validation====================
   try {
@@ -234,13 +235,14 @@ app.post("/login", async (req, res) => {
     if (regexPatterns.email.test(userId)) {
       userDb = await userModel.findOne({ email: userId });
       console.log("found user with email");
+      console.log(userDb);
     }
     //if login with username
     else {
-      userDb = await userModel.findOne({ username: userId });
+      userDb = await userModel.findOne({username : userId });
       console.log("found user with username");
+      console.log(userDb);
     }
-    console.log(userDb);
 
     //if user doesn't exist and we get null
     if (!userDb) {
@@ -324,6 +326,34 @@ app.post("/logout", isAuth, (req, res) => {
     res.status(200).json({ message: "Logout successful" });
   });
 });
+
+//================== logout from all devices api=====================
+
+app.post("/logout-all-device", isAuth,async (req,res)=>{
+  const userId = req.session.user.userId;
+  //create a session schema
+  const sessionSchema = new Schema({ _id: String }, { strict: false });
+  //convert it into model
+  const sessionModel = mongoose.model("session", sessionSchema);
+  //mongoose query to delete all the related entries
+  try {
+    const deletedSessions = await sessionModel.deleteMany({
+      "session.user.userId": userId,
+    });
+    console.log("Line 115", deletedSessions);
+    res.send({
+      status: 200,
+      message: `Logout from ${deletedSessions.deletedCount} devices successfull`,
+    });
+  } catch (error) {
+    return res.send({
+      status: 500,
+      message: "Internal server error",
+      error: error,
+    });
+  }
+  console.log("Logout from all devices successfull");
+})
 
 // ===================todoCreation api==================================
 app.post("/create-item", isAuth, ratelimitng, async (req, res) => {
