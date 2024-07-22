@@ -125,7 +125,7 @@ document.addEventListener("click", function (event) {
           .join("");
       })
       .catch((err) => {
-        console.log(err.response);
+        
         if (err.response.status !== 500) {
           alert(err.response.data);
         }

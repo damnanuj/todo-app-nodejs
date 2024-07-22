@@ -83,13 +83,13 @@ const sendVerificationMail = ({ email, token }) => {
     secure: true,
     service: "gmail",
     auth: {
-      user: "anujgupta2192000@gmail.com",
+      user: "anujkrgupta21@gmail.com",
       pass: process.env.APP_PASS,
     },
   });
 
   const mailOptions = {
-    from: "anujgupta2192000@gmail.com",
+    from: "anujkrgupta21@gmail.com",
     to: email,
     subject: "Email verification for TODO-APP",
     html: `<head>
