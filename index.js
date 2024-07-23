@@ -312,7 +312,7 @@ app.post("/login", async (req, res) => {
 // isAuth is middleware protecting the api
 app.get("/dashboard", isAuth, (req, res) => {
   // console.log("dashboard api");
-  return res.render("dashboard");
+  return res.render("dashboardNewUi");
 });
 //===================== logout api=====================
 app.post("/logout", isAuth, (req, res) => {
@@ -328,31 +328,31 @@ app.post("/logout", isAuth, (req, res) => {
 });
 
 //================== logout from all devices api=====================
-app.post("/logout-all-device", isAuth,async (req,res)=>{
-  const userId = req.session.user.userId;
-  //create a session schema
-  const sessionSchema = new Schema({ _id: String }, { strict: false });
-  //convert it into model
-  const sessionModel = mongoose.model("session", sessionSchema);
-  //mongoose query to delete all the related entries
-  try {
-    const deletedSessions = await sessionModel.deleteMany({
-      "session.user.userId": userId,
-    });
-    console.log("Line 115", deletedSessions);
-    res.send({
-      status: 200,
-      message: `Logout from ${deletedSessions.deletedCount} devices successfull`,
-    });
-  } catch (error) {
-    return res.send({
-      status: 500,
-      message: "Internal server error",
-      error: error,
-    });
-  }
-  console.log("Logout from all devices successfull");
-})
+// app.post("/logout-all-device", isAuth,async (req,res)=>{
+//   const userId = req.session.user.userId;
+//   //create a session schema
+//   const sessionSchema = new Schema({ _id: String }, { strict: false });
+//   //convert it into model
+//   const sessionModel = mongoose.model("session", sessionSchema);
+//   //mongoose query to delete all the related entries
+//   try {
+//     const deletedSessions = await sessionModel.deleteMany({
+//       "session.user.userId": userId,
+//     });
+//     console.log("Line 115", deletedSessions);
+//     res.send({
+//       status: 200,
+//       message: `Logout from ${deletedSessions.deletedCount} devices successfull`,
+//     });
+//   } catch (error) {
+//     return res.send({
+//       status: 500,
+//       message: "Internal server error",
+//       error: error,
+//     });
+//   }
+//   console.log("Logout from all devices successfull");
+// })
 
 // ===================todoCreation api==================================
 app.post("/create-item", isAuth, ratelimitng, async (req, res) => {
@@ -364,6 +364,7 @@ app.post("/create-item", isAuth, ratelimitng, async (req, res) => {
   try {
     await todoValidation({ todo: todo });
   } catch (error) {
+    
     return res.status(400).json(error);
   }
 
@@ -533,6 +534,36 @@ app.post("/delete-item", isAuth, async (req, res) => {
   }
 });
 
+
+// ===============Delete all todos api======================
+app.post("/delete-all-items", isAuth, async (req, res) => {
+  try {
+    // Get the username from the session
+    const username = req.session.user.username;
+
+    // Delete all todos associated with the current user
+    const result = await todoModel.deleteMany({ username: username });
+
+    // Check if any todos were deleted
+    if (result.deletedCount === 0) {
+      return res.send({
+        status: 400,
+        message: "No todos found to delete",
+      });
+    }
+
+    return res.send({
+      status: 200,
+      message: "All todos deleted successfully",
+    });
+  } catch (error) {
+    return res.send({
+      status: 500,
+      message: "Internal server error",
+      error: error,
+    });
+  }
+})
 // =========================================
 app.listen(PORT, () => {
   console.log(clc.yellowBright(`server is running on port :`));

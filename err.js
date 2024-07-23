@@ -8,7 +8,7 @@ window.onload = generateTodos;
 function generateTodos(callback) {
   if (loading) return;
   loading = true;
-   const loaderArea = document.querySelector(".loaderArea");
+  const loaderArea = document.querySelector(".loaderArea");
   const loader = document.createElement("div");
   loader.classList.add("loader");
   loaderArea.appendChild(loader);
@@ -16,6 +16,22 @@ function generateTodos(callback) {
   axios
     .get(`/read-item?skip=${skip}`)
     .then((res) => {
+      if (res.data.status === 204) {
+        // Show no todos message if status is 204
+        if (!document.getElementById("no-todos-message")) {
+          const noTodosMessage = document.createElement("div");
+          noTodosMessage.id = "no-todos-message";
+          noTodosMessage.textContent = "No todos found. Please add some.";
+          noTodosMessage.style.color = "red";
+          noTodosMessage.style.marginTop = "10px";
+          document.getElementById("item_list").appendChild(noTodosMessage);
+        }
+        removeLoader(loader);
+        document.querySelector(".show_more").style.display = "none";
+        loading = false;
+        return;
+      }
+
       if (res.data.status !== 200) {
         if (!document.getElementById("no-more-todos-message")) {
           const noMoreTodosMessage = document.createElement("div");
@@ -39,7 +55,7 @@ function generateTodos(callback) {
       skip += todos.length;
       allTodos = [...allTodos, ...todos];
 
-      renderTodos(allTodos.slice(0, skip));
+      renderTodos(allTodos);
       removeLoader(loader);
       loading = false;
 
@@ -69,6 +85,16 @@ function renderTodos(todos) {
           </div>`;
     })
     .join("");
+
+  // Hide the no-todos message if there are todos
+  const noTodosMessage = document.getElementById("no-todos-message");
+  if (noTodosMessage) {
+    if (todos.length > 0) {
+      noTodosMessage.style.display = "none";
+    } else {
+      noTodosMessage.style.display = "block";
+    }
+  }
 }
 
 function removeLoader(loader) {
@@ -91,7 +117,7 @@ document.addEventListener("click", function (event) {
         }
         const todo = allTodos.find((item) => item._id === todoId);
         if (todo) todo.todo = newData;
-        renderTodos(allTodos.slice(0, skip));
+        renderTodos(allTodos);
       })
       .catch((error) => {
         console.log(error);
@@ -109,11 +135,38 @@ document.addEventListener("click", function (event) {
           return;
         }
         allTodos = allTodos.filter((item) => item._id !== todoId);
-        renderTodos(allTodos.slice(0, skip));
+        renderTodos(allTodos);
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  if (event.target.classList.contains("deleteAll")) {
+    if (confirm("Are you sure you want to delete all todos?")) {
+      const loaderArea = document.querySelector(".loaderArea");
+      const loader = document.createElement("div");
+      loader.classList.add("loader");
+      loaderArea.appendChild(loader);
+
+      axios
+        .post("/delete-all-items")
+        .then((res) => {
+          removeLoader(loader);
+          if (res.data.status === 200) {
+            alert("All todos have been deleted successfully.");
+            allTodos = [];
+            renderTodos(allTodos);
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          removeLoader(loader);
+          console.log(err);
+          alert("An error occurred while deleting todos. Please try again.");
+        });
+    }
   }
 
   if (event.target.classList.contains("add_item")) {
@@ -125,7 +178,18 @@ document.addEventListener("click", function (event) {
         document.getElementById("create_field").value = "";
         const newTodo = res.data.data;
         allTodos = [newTodo, ...allTodos];
-        renderTodos(allTodos.slice(0, skip));
+        skip++;  // Increase skip to account for the newly added todo
+        renderTodos(allTodos);
+        // renderTodos(allTodos.slice(0, skip));
+
+
+        
+
+        // Hide the no-todos message after adding a new todo
+        const noTodosMessage = document.getElementById("no-todos-message");
+        if (noTodosMessage) {
+          noTodosMessage.style.display = "none";
+        }
       })
       .catch((err) => {
         if (err.response.status !== 500) {
@@ -154,27 +218,6 @@ document.addEventListener("click", function (event) {
         loader.remove();
       });
   }
-
-  // if (event.target.classList.contains("logoutAll")) {
-  //   const loaderArea = document.querySelector(".loaderArea");
-  //   const loader = document.createElement("div");
-  //   loader.classList.add("loader");
-  //   loaderArea.appendChild(loader);
-
-  //   axios
-  //     .post("/logout-all-device")
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         setTimeout(() => {
-  //           window.location.href = "/login";
-  //         }, 1000);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       loader.remove();
-  //     });
-  // }
 
   if (event.target.classList.contains("show_more")) {
     const loaderArea = document.querySelector(".loaderArea");
