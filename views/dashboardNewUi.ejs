@@ -270,12 +270,17 @@ body {
 }
 
 .addTaskBtn {
+  cursor: pointer;
   padding: 4px 50px;
   border: none;
   background-color: cadetblue;
   border-radius: 4px;
   color: white;
   box-shadow: -1px 1px 10px 1px #64897e;
+  transition: all 0.3s ease;
+}
+.addTaskBtn:hover{
+  background-color: rgb(61, 141, 144);
 }
 
 
@@ -285,64 +290,7 @@ body {
 
 
      
-.home_right{
-  form {
-    background-color: white;
-    padding: 20px 50px;
-    margin: 10px 0;
-    width: 400px;
-    height: 400px;
-    border-radius: 5px;
-    letter-spacing: 1px;
-  }
-  h2 {
-    font-family: Arial;
-    text-align: center;
-  }
-  div {
-    padding-bottom: 30px;
-  }
-  div > input {
-    width: 100%;
-    padding: 15px 15px;
-    margin: 5px 0;
-    border: 1px solid rgb(194, 189, 189);
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  div > label {
-    font-family: Arial;
-    font-size: 85%;
-    font-weight: bold;
-    color: rgb(85, 78, 78);
-  }
-  div > label::after {
-    content: "*";
-    color: red;
-  }
-  label[for="checkbox"] {
-    text-decoration: underline;
-    font-family: Arial;
-    font-size: 85%;
-  }
 
-  button {
-    width: 100%;
-    font-weight: bold;
-    background-color: cadetblue;
-    color: white;
-    padding: 15px 20px;
-    margin: 20px 0;
-    border: none;
-    border-radius: 4px;
-  }
-  button:hover {
-    background-color: rgb(56, 121, 124);
-  }
-  label[for="checkbox"]:hover {
-    color: blue;
-  }
-}
    
 
 
@@ -374,6 +322,23 @@ body {
       100% {
         transform: rotate(360deg);
       }
+    }
+
+    .show_more{
+      padding: 5px 15px ;
+      border-radius: 20px;
+      border: 1px solid cadetblue;
+      color: cadetblue;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      z-index: 100001;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .show_more:hover{
+      transform: scale(1.02);
     }
 
 
@@ -456,7 +421,9 @@ body {
             </div>
           </div> -->
         </div>
-
+        <button class="show_more">Show More
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
         <!-- input task -->
         <div class="TaskInput">
           <div class="InputHolder">
@@ -469,7 +436,7 @@ body {
             <button class=" add_item addTaskBtn">Add</button>
           </div>
         </div>
-        <button class="show_more">Show More</button>
+        
       </div>
     </div>
 
