@@ -78,8 +78,8 @@ const sendVerificationMail = ({ email, token }) => {
 
   let transpoter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for port 465, false for other ports like 587
+    port: 465,
+    secure: true, // true for port 465, false for other ports like 587
     auth: {
         user: "anujkrgupta21@gmail.com", 
         pass: process.env.APP_PASS, 
