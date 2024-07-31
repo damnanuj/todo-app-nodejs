@@ -1,17 +1,16 @@
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-
 const regexPatterns = {
   name: /^[a-zA-Z\s]+$/,
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  username: /^[a-zA-Z0-9]{3,15}$/,
+  username: /^[a-zA-Z]{3}.{0,12}$/,
   // upper lower number and special character pass regex
   // password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-  password: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z]{8,}$/,
+  password: /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
 };
 
-const userDataValidation = ( name, username, email, password ) => {
+const userDataValidation = (name, username, email, password) => {
   return new Promise((resolve, reject) => {
     name = name && name.trim();
     username = username && username.trim();
@@ -76,7 +75,7 @@ const generateToken = ({ email }) => {
 const sendVerificationMail = ({ email, token }) => {
   //1. create a transpoter
   // console.log("Line 77 auth==>>", email, token);
-  
+
   const transpoter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
