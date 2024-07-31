@@ -1,23 +1,16 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
 
-
-#dynamicInput {
-    width: 300px;
-    /* Initial width */
-    width: 90%;
-    height: auto;
-    min-height: auto;
-    resize: vertical;
-    /* Allow vertical resizing */
-    overflow: hidden;
-    /* Hide overflow text */
-    resize: none;
-    /* Disable resizing */
-    background: transparent;
-    /* Make the textarea transparent */
-    border: none;
-    /* Remove the border */
-    outline: none;
-    color: white;
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
 }
 
@@ -27,15 +20,6 @@
     --darkest: #111827;
     --grey: #6b7280;
 
-}
-
-body {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: red;
 }
 
 .homepage_container {
@@ -60,10 +44,6 @@ body {
 
 }
 
-.guy {
-    width: 250px;
-    z-index: 101;
-}
 
 .home_left {
     width: 40%;
@@ -125,15 +105,34 @@ body {
     font-size: 25px;
     color: #111827;
     cursor: pointer;
+    display: flex;
+
+    align-items: flex-end;
+    gap: 3px;
+    flex-direction: column;
+
+    p {
+        font-size: 10px;
+    }
 }
 
 .deleteAll {
+
     position: absolute;
     top: 15px;
     left: 15px;
     font-size: 25px;
     color: #111827;
     cursor: pointer;
+    display: flex;
+
+    align-items: flex-start;
+    gap: 5px;
+    flex-direction: column;
+
+    p {
+        font-size: 10px;
+    }
 }
 
 
@@ -141,7 +140,7 @@ body {
     width: 90%;
     position: absolute;
     top: 65px;
-    bottom: 0;
+    bottom: 20px;
     /* border-radius: 10px; */
     display: flex;
     flex-direction: column;
