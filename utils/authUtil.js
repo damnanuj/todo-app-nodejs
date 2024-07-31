@@ -75,7 +75,7 @@ const generateToken = ({ email }) => {
 
 const sendVerificationMail = ({ email, token }) => {
   //1. create a transpoter
-  console.log("Line 77 auth==>>", email, token);
+  // console.log("Line 77 auth==>>", email, token);
   
   const transpoter = nodemailer.createTransport({
     host: "smtp.gmail.com",

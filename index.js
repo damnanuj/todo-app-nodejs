@@ -188,7 +188,7 @@ app.get("/verifytoken/:token", async (req, res) => {
         </head>
         <body>
           <h1>Email has been verified successfully</h1>
-          <p>Redirecting to dashboard in <span id="countdown">3</span> seconds...</p>
+          <p>Redirecting to login page in <span id="countdown">3</span> seconds...</p>
           <script>
             let countdownNumber = 3;
             const countdownElement = document.getElementById('countdown');
@@ -199,7 +199,7 @@ app.get("/verifytoken/:token", async (req, res) => {
     
               if (countdownNumber <= 0) {
                 clearInterval(countdownInterval);
-                window.location.href = '/dashboard'; // dashboard page URL
+                window.location.href = '/login'; // login page URL
               }
             }, 1000);
           </script>
@@ -237,13 +237,13 @@ app.post("/login", async (req, res) => {
     if (regexPatterns.email.test(userId)) {
       userDb = await userModel.findOne({ email: userId });
       console.log("found user with email");
-      console.log(userDb);
+      // console.log(userDb);
     }
     //if login with username
     else {
       userDb = await userModel.findOne({username : userId });
       console.log("found user with username");
-      console.log(userDb);
+      // console.log(userDb);
     }
 
     //if user doesn't exist and we get null
@@ -361,7 +361,7 @@ app.post("/create-item", isAuth, ratelimitng, async (req, res) => {
   const username = req.session.user.username;
   const todo = req.body.todo;
 
-  console.log(username, todo);
+  // console.log(username, todo);
   // todo validation
   try {
     await todoValidation({ todo: todo });
@@ -455,14 +455,14 @@ app.post("/edit-item", isAuth, async (req, res) => {
   // provided todo id present or not in DB
   try {
     const todoDb = await todoModel.findOne({ _id: todoId });
-    console.log(todoDb);
+    // console.log(todoDb);
     if (!todoDb) {
       return res.status(400).json(`Todo not found with this id ${todoId}`);
     }
 
     //  ownership check of the provided todoId
     const ownerUsername = todoDb.username;
-    console.log(username, ownerUsername);
+    // console.log(username, ownerUsername);
 
     if (username !== ownerUsername) {
       return res.send({
@@ -501,7 +501,7 @@ app.post("/delete-item", isAuth, async (req, res) => {
   try {
     // check if present or not
     const todoDb = await todoModel.findOne({ _id: todoId });
-    console.log(todoDb);
+    // console.log(todoDb);
     if (!todoDb) {
       return res.send({
         status: 400,
@@ -512,7 +512,7 @@ app.post("/delete-item", isAuth, async (req, res) => {
 
     const username = req.session.user.username;
     const ownerUsername = todoDb.username;
-    console.log(username, ownerUsername);
+    // console.log(username, ownerUsername);
     if (username !== ownerUsername) {
       return res.send({
         status: 403,
@@ -521,7 +521,7 @@ app.post("/delete-item", isAuth, async (req, res) => {
     }
     // all checks done finally delete the todo
     const todoPrev = await todoModel.findOneAndDelete({ _id: todoId });
-    console.log(todoPrev);
+    // console.log(todoPrev);
     return res.send({
       status: 200,
       message: "Todo deleted successfully",
@@ -568,6 +568,6 @@ app.post("/delete-all-items", isAuth, async (req, res) => {
 })
 // =========================================
 app.listen(PORT, () => {
-  console.log(clc.yellowBright(`server is running on port :`));
+  (clc.yellowBright(`server is running on port :`));
   console.log(clc.yellowBright(`http://localhost:${PORT}`));
 });

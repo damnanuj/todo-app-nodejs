@@ -16,7 +16,7 @@ function generateTodos(callback) {
   axios
     .get(`/read-item?skip=${skip}`)
     .then((res) => {
-      console.log(res);
+      // console.log(res);
       if (res.data.status === 204) {
         // Show no todos message if status is 204
         if (!document.getElementById("no-todos-message")) {
