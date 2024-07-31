@@ -112,7 +112,7 @@ const sendVerificationMail = ({ email, token }) => {
   <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; border: 1px solid #cccccc;">
     <tr>
       <td align="center" bgcolor="#defcf9" style="padding: 40px 0 30px 0;">
-        <img src="https://www.jotform.com/blog/wp-content/uploads/2020/01/email-marketing-intro-02-700x544.png" alt="logo" width="300" height="230" style="display: block;" />
+       
       </td>
     </tr>
     <tr>
@@ -164,6 +164,8 @@ const sendVerificationMail = ({ email, token }) => {
   </body>`,
   };
 
+
+  // <img src="https://www.jotform.com/blog/wp-content/uploads/2020/01/email-marketing-intro-02-700x544.png" alt="logo" width="300" height="230" style="display: block;" />
   transpoter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
