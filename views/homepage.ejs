@@ -1,19 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="/login" method="get">
-        <button type="submit">Login</button>
-    </form>
-    <form action="/register" method="get">
-        <button type="submit">Register</button>
-    </form>
-    <form action="/dashboard" method="get">
-        <button type="submit">Dashboard</button>
-    </form>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/css/formStyles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo APP</title>
+  </head>
+  <body>
+    <style>
+      .logo {
+        width: 270px;
+      }
+      .heading {
+        color: #71b7e6;
+      }
+      .description,
+      .heading,
+      .subheading {
+        text-align: center;
+      }
+    </style>
+    <div class="container homepageContainer">
+      <img class="logo" src="/images/Logo.png" alt="TaskMaster Logo" />
+      <h1 class="heading">Welcome to TaskMaster</h1>
+      <b class="subheading">Your Personal Productivity Partner</b>
+      <p class="description">
+        Your Productivity Partner "Organize, prioritize, and conquer your to-do
+        list."
+      </p>
+      <form action="/login" method="get">
+        <button class="btn" type="submit">Get Started</button>
+      </form>
+    </div>
+  </body>
 </html>

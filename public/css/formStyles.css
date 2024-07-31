@@ -15,6 +15,16 @@ body {
   padding: 10px;
   background: linear-gradient(135deg, #71b7e6, #9b59b6);
 }
+.homepageContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  .btn{
+    margin-top: 20px;
+  }
+}
 
 .container {
   max-width: 700px;
@@ -23,6 +33,7 @@ body {
   padding: 25px 30px;
   border-radius: 30px;
 }
+
 
 .container .title {
   font-size: 25px;
