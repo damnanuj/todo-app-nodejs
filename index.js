@@ -165,7 +165,7 @@ app.post("/register", async (req, res) => {
 // ============verify email token ================
 
 app.get("/verifytoken/:token", async (req, res) => {
-  console.log(req.params.token);
+  // console.log(req.params.token);
   const token = req.params.token;
 
   const email = jwt.verify(token, process.env.SECRET_KEY);

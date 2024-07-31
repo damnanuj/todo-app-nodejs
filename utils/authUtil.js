@@ -73,21 +73,21 @@ const generateToken = ({ email }) => {
 //send verification mail
 
 const sendVerificationMail = ({ email, token }) => {
-  //1. create a transpoter
-  // console.log("Line 77 auth==>>", email, token);
+ 
+  console.log("Line 77 auth==>>", email, token);
 
-  const transpoter = nodemailer.createTransport({
+  let transpoter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
-    service: "gmail",
+    service: "Gmail",
     auth: {
       user: "anujkrgupta21@gmail.com",
       pass: process.env.APP_PASS,
     },
   });
 
-  const mailOptions = {
+  let mailOptions = {
     from: "anujkrgupta21@gmail.com",
     to: email,
     subject: "Email verification for TODO-APP",
@@ -123,6 +123,7 @@ const sendVerificationMail = ({ email, token }) => {
           </tr>
           <tr>
             <td style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; padding: 20px 0 30px 0;">
+                           
             <a href="https://todo-app-nodejs-m7v9.onrender.com/verifytoken/${token}" style=" border: none;
             background-color: #ef7e5c;
     color: white;

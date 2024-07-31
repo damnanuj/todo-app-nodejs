@@ -6,37 +6,47 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="stylesheet" href="/css/formStyles.css">
   <title>Registration Form</title>
-  
+  <style>
+    /* Inline CSS for error messages */
+    .error-message {
+      color: red;
+      font-size: 0.875em;
+      margin-top: 0.5em;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <div class="title">Registration</div>
-    <form action="/register" method="POST">
+    <form id="registrationForm" method="POST">
       <div class="user-details">
         <div class="input-box">
           <span class="details">Full Name</span>
           <input type="text" name="name" placeholder="Enter Your Name" required />
+          <p class="error-message" id="nameError"></p>
         </div>
         <div class="input-box">
           <span class="details">User Name</span>
           <input type="text" name="username" placeholder="Enter User Name" required />
+          <p class="error-message" id="usernameError"></p>
         </div>
         <div class="input-box">
           <span class="details">Email</span>
           <input type="text" name="email" placeholder="Enter Your Email" required />
+          <p class="error-message" id="emailError"></p>
         </div>
         <div class="input-box">
           <span class="details">Password</span>
           <input type="password" name="password" placeholder="Enter Your Password" required />
+          <p class="error-message" id="passwordError"></p>
         </div>
       </div>
       <div class="button">
         <button class="btn" type="submit">Register</button>
-        
       </div>
       <p>Already a user <a href="/login">login here</a></p>
-      
     </form>
   </div>
+
 </body>
 </html>
