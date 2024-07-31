@@ -1,5 +1,5 @@
 const express = require("express");
-
+const path = require('path'); 
 require("dotenv").config();
 const clc = require("cli-color");
 const mongoose = require("mongoose");
@@ -23,6 +23,8 @@ const store = new connectMongodbSession({
 // app.use(cookieParser())
 // app.use(cors())
 //====================middleware====================
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 app.set("view engine", "ejs");
 app.use(express.json()); //body parser json format POSTMAN
 app.use(express.urlencoded({ extended: true })); //body parser url

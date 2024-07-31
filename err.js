@@ -16,12 +16,13 @@ function generateTodos(callback) {
   axios
     .get(`/read-item?skip=${skip}`)
     .then((res) => {
+      console.log(res);
       if (res.data.status === 204) {
         // Show no todos message if status is 204
         if (!document.getElementById("no-todos-message")) {
           const noTodosMessage = document.createElement("div");
           noTodosMessage.id = "no-todos-message";
-          noTodosMessage.textContent = "No todos found. Please add some.";
+          noTodosMessage.textContent = res.data.message;
           noTodosMessage.style.color = "red";
           noTodosMessage.style.marginTop = "10px";
           document.getElementById("item_list").appendChild(noTodosMessage);

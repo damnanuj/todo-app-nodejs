@@ -1,0 +1,390 @@
+
+
+#dynamicInput {
+    width: 300px;
+    /* Initial width */
+    width: 90%;
+    height: auto;
+    min-height: auto;
+    resize: vertical;
+    /* Allow vertical resizing */
+    overflow: hidden;
+    /* Hide overflow text */
+    resize: none;
+    /* Disable resizing */
+    background: transparent;
+    /* Make the textarea transparent */
+    border: none;
+    /* Remove the border */
+    outline: none;
+    color: white;
+
+}
+
+:root {
+    --dark: #374151;
+    --darker: #1f2937;
+    --darkest: #111827;
+    --grey: #6b7280;
+
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+}
+
+.homepage_container {
+    width: 70%;
+    height: 90vh;
+    background-color: rgb(220, 220, 220);
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    box-shadow: 2px 10px 20px 5px gray;
+}
+
+.homepage_top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    height: 25%;
+    background-color: cadetblue;
+    position: absolute;
+    top: 0;
+
+}
+
+.guy {
+    width: 250px;
+    z-index: 101;
+}
+
+.home_left {
+    width: 40%;
+    height: 100%;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home_right {
+    width: 60%;
+    height: 100%;
+    /* box-shadow: 2px 10px 20px 5px gray; */
+    z-index: 101;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* #64897E; */
+
+.Dashboard_Container {
+    width: 90%;
+    height: 90vh;
+    background-color: rgb(220, 220, 220);
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    box-shadow: 2px 10px 20px 5px gray;
+
+}
+
+.appName {
+    position: absolute;
+    top: 15px;
+    font-size: 20px;
+    color: white;
+
+}
+
+.top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+    height: 25%;
+    background-color: cadetblue;
+    position: relative;
+    display: flex;
+    justify-content: center;
+
+}
+
+.logout {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 25px;
+    color: #111827;
+    cursor: pointer;
+}
+
+.deleteAll {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 25px;
+    color: #111827;
+    cursor: pointer;
+}
+
+
+.mainContainer {
+    width: 90%;
+    position: absolute;
+    top: 65px;
+    bottom: 0;
+    /* border-radius: 10px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.taskLists {
+    width: 100%;
+    height: 75%;
+    border-radius: 10px;
+    gap: 0.5rem;
+    overflow-y: scroll;
+    /* background-color: white; */
+}
+
+.taskLists::-webkit-scrollbar {
+    width: 0;
+    background: none;
+}
+
+.taskLists .task {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--darkest);
+    padding: 0.6rem;
+    border-radius: 0.8rem;
+    margin-bottom: 0.4rem;
+    align-items: center;
+    border: 0.1px solid cadetblue;
+    height: auto;
+}
+
+.task .content {
+    flex: 1 1 0%;
+}
+
+.task .content ol li {
+    color: cadetblue;
+    list-style: none;
+    margin-left: 1rem;
+}
+
+
+
+
+.task .actions {
+    display: flex;
+    margin: 0 0.5rem;
+}
+
+.task .actions button:hover {
+    opacity: 0.8;
+}
+
+.task .actions button:active {
+    opacity: 0.6;
+}
+
+.task .actions .edit {
+    /* background-image: linear-gradient(to right, var(--pink), var(--purple));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent; */
+    color: cadetblue;
+}
+
+.task .actions .delete {
+    color: cadetblue;
+}
+
+.task .actions .drag {
+    color: cadetblue;
+}
+
+.actions span {
+    padding: 5px;
+    font-size: 20px;
+}
+
+.actions span i {
+    cursor: pointer;
+}
+
+/* task add area bottom */
+.TaskInput {
+    width: 80%;
+    height: 20%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 2px -2px 10px 2px rgb(162, 162, 162);
+}
+
+.InputHolder {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+    /* background-color: purple; */
+}
+
+.newTaskInput {
+    width: 70%;
+    padding: 5px;
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: transparent;
+    border-bottom: 1px solid cadetblue;
+    text-align: center;
+    color: cadetblue;
+}
+
+.addTaskBtn {
+    cursor: pointer;
+    padding: 4px 50px;
+    border: none;
+    background-color: cadetblue;
+    border-radius: 4px;
+    color: white;
+    box-shadow: -1px 1px 10px 1px #64897e;
+    transition: all 0.3s ease;
+}
+
+.addTaskBtn:hover {
+    background-color: rgb(61, 141, 144);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*========= Loader ============= */
+.loaderArea {
+    position: absolute;
+    top: 15px;
+    left: 80%;
+
+}
+
+.loader {
+    border: 4px solid #f3f3f3;
+    /* Light grey */
+    border-top: 4px solid #3498db;
+    /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.show_more {
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid cadetblue;
+    color: cadetblue;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 100001;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.show_more:hover {
+    transform: scale(1.02);
+}
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 600px) {
+    body {
+        align-items: flex-start;
+    }
+
+    .mainContainer {
+        justify-content: flex-start;
+    }
+
+    .Dashboard_Container {
+        /* width: 95%; */
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .top {
+        border-radius: 0;
+    }
+
+    .task .content ol li {
+        color: cadetblue;
+        list-style: none;
+        margin-right: 10px;
+    }
+
+    .taskLists {
+        margin: 1rem 0 1rem 0;
+        height: 70%;
+    }
+
+    .task .content .text {
+        font-size: 0.8rem;
+        padding-left: 10px;
+    }
+
+    .actions span {
+        padding: 5px;
+        font-size: 16px;
+    }
+
+    .TaskInput {
+        width: 85%;
+        height: 15%;
+    }
+}
