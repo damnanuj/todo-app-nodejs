@@ -133,10 +133,10 @@ app.post("/register", async (req, res) => {
         </head>
         <body>
           <h1>Registration Successful</h1>
-          <h2>Please check your email to verify your account</h2>
+          <h2>Please check your email/spam to verify your account</h2>
           <p>Redirecting to login page in <span id="countdown">3</span> seconds...</p>
           <script>
-            let countdownNumber = 3;
+            let countdownNumber = 5;
             const countdownElement = document.getElementById('countdown');
     
             const countdownInterval = setInterval(() => {
