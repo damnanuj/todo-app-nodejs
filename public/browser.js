@@ -162,24 +162,30 @@ document.addEventListener("click", function (event) {
   }
 
   if (event.target.classList.contains("logout")) {
-    const loaderArea = document.querySelector(".loaderArea");
-    const loader = document.createElement("div");
-    loader.classList.add("loader");
-    loaderArea.appendChild(loader);
+    // Ask for user confirmation before logging out
+    if (confirm("Are you sure you want to logout?")) {
+      const loaderArea = document.querySelector(".loaderArea");
+      const loader = document.createElement("div");
+      loader.classList.add("loader");
+      loaderArea.appendChild(loader);
 
-    axios
-      .post("/logout")
-      .then((res) => {
-        if (res.status === 200) {
-          setTimeout(() => {
+      axios
+        .post("/logout")
+        .then((res) => {
+          if (res.status === 200) {
             window.location.href = "/login";
-          }, 1000);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        loader.remove();
-      });
+          } else {
+            throw new Error('Logout failed');
+          }
+        })
+        .catch((err) => {
+          console.error('Error during logout:', err);
+          alert('An error occurred while logging out. Please try again.');
+        })
+        .finally(() => {
+          loader.remove();
+        });
+    }
   }
 
   // if (event.target.classList.contains("logoutAll")) {

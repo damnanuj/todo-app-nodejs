@@ -98,7 +98,7 @@ body {
 
 }
 
-.logout {
+.logoutContainer {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -106,7 +106,7 @@ body {
     color: #111827;
     cursor: pointer;
     display: flex;
-
+   
     align-items: flex-end;
     gap: 3px;
     flex-direction: column;
@@ -116,7 +116,7 @@ body {
     }
 }
 
-.deleteAll {
+.deleteAllContainer {
 
     position: absolute;
     top: 15px;
