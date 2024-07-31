@@ -77,20 +77,23 @@ const sendVerificationMail = ({ email, token }) => {
   console.log("Line 77 auth==>>", email, token);
 
   let transpoter = nodemailer.createTransport({
-    host: "smtp-mail.outlook.com",
+    host: "smtp.gmail.com",
     port: 587,
-    secure: true,
-    service: "Gmail",
+    secure: false, // true for port 465, false for other ports like 587
     auth: {
-      user: "anujkrgupta21@gmail.com",
-      pass: process.env.APP_PASS,
+        user: "anujkrgupta21@gmail.com", 
+        pass: process.env.APP_PASS, 
     },
+    tls: {
+        rejectUnauthorized: false
+    }
   });
 
   let mailOptions = {
-    from: "anujkrgupta21@gmail.com",
+    from: "TODO-APP <anujkrgupta21@gmail.com>",
     to: email,
     subject: "Email verification for TODO-APP",
+    text: "Hello. Please verify your email for the TODO-APP.",
     html: `<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Todo App</title>
