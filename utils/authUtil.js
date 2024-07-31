@@ -77,8 +77,8 @@ const sendVerificationMail = ({ email, token }) => {
   console.log("Line 77 auth==>>", email, token);
 
   let transpoter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
+    host: "smtp-mail.outlook.com",
+    port: 587,
     secure: true,
     service: "Gmail",
     auth: {
