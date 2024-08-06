@@ -73,7 +73,6 @@ const generateToken = ({ email }) => {
 //send verification mail
 
 const sendVerificationMail = ({ email, token }) => {
- 
   console.log("Line 77 auth==>>", email, token);
 
   let transpoter = nodemailer.createTransport({
@@ -81,16 +80,16 @@ const sendVerificationMail = ({ email, token }) => {
     port: 465,
     secure: true, // true for port 465, false for other ports like 587
     auth: {
-        user: "anujkrgupta21@gmail.com", 
-        pass: process.env.APP_PASS, 
+      user: "damnanuj21@gmail.com",
+      pass: process.env.APP_PASS,
     },
     tls: {
-        rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+    },
   });
 
   let mailOptions = {
-    from: "TODO-APP <anujkrgupta21@gmail.com>",
+    from: "TODO-APP <damnanuj21@gmail.com>",
     to: email,
     subject: "Email verification for TODO-APP",
     text: "Hello. Please verify your email for the TODO-APP.",
@@ -163,7 +162,6 @@ const sendVerificationMail = ({ email, token }) => {
     </table>
   </body>`,
   };
-
 
   // <img src="https://www.jotform.com/blog/wp-content/uploads/2020/01/email-marketing-intro-02-700x544.png" alt="logo" width="300" height="230" style="display: block;" />
   transpoter.sendMail(mailOptions, function (error, info) {
